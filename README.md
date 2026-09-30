@@ -9,6 +9,8 @@ Reusable personal skills for Codex and Claude Code.
 
 ## Install project-continuity
 
+### Mac and Linux
+
 On each Mac or Linux machine:
 
 ```bash
@@ -29,6 +31,46 @@ update the installed skill. To get published updates on another machine:
 ```bash
 git -C "$HOME/code/AI-Tool-Skills" pull --ff-only
 ```
+
+### Windows PC (PowerShell)
+
+With Git installed, open PowerShell and run:
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\code" | Out-Null
+git clone https://github.com/lloydlentz/AI-Tool-Skills.git "$HOME\code\AI-Tool-Skills"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\code\AI-Tool-Skills\install-project-continuity.ps1"
+```
+
+If you already cloned the repository, skip the clone command. Start a new
+Codex or Claude Code session after installation. The installer copies the
+complete skill into:
+
+- Codex: `%USERPROFILE%\.agents\skills\project-continuity`
+- Claude Code: `%USERPROFILE%\.claude\skills\project-continuity`
+
+It backs up previous installations under
+`%USERPROFILE%\.agents\skill-backups\`. Copies avoid requiring administrator
+access for symbolic links. The execution-policy option applies only to that
+PowerShell invocation.
+
+Because Windows uses copies, pull updates and rerun the installer:
+
+```powershell
+git -C "$HOME\code\AI-Tool-Skills" pull --ff-only
+if ($LASTEXITCODE -eq 0) {
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\code\AI-Tool-Skills\install-project-continuity.ps1"
+}
+```
+
+If running the agent inside WSL, use the Linux instructions inside WSL instead.
+
+The install locations follow the official
+[Codex skills documentation](https://developers.openai.com/codex/skills) and
+[Claude Code skills documentation](https://code.claude.com/docs/en/skills).
+The PowerShell installer has not yet been execution-tested on a Windows PC.
+
+### Sharing
 
 This is also a public repository that others can clone and install. If using
 an agent with a different skill location, copy the whole `project-continuity/`
