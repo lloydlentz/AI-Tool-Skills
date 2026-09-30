@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Continuity"
+  short_description: "Wrap up, checkpoint, and resume project work safely"
+  default_prompt: "Use $project-continuity handoff to reconcile the project record for the next session, or $project-continuity resume to catch up from it."
