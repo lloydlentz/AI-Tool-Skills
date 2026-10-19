@@ -1,0 +1,4 @@
+interface:
+  display_name: "Usability Refinement"
+  short_description: "Grade and refine interfaces through bounded UX loops"
+  default_prompt: "Use $usability-refinement to review this interface and improve every tab and major interaction to A- within four loops, with a decision log and final report."

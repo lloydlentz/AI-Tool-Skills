@@ -6,6 +6,33 @@ Reusable personal skills for Codex and Claude Code.
 | --- | --- |
 | [project-continuity](project-continuity/SKILL.md) | Save a handoff, checkpoint progress, or resume from a project's durable record. |
 | [meeting-summary](meeting-summary/SKILL.md) | Turn meeting transcripts into summaries and action items. |
+| [usability-refinement](usability-refinement/SKILL.md) | Review and improve a live interface through graded, bounded UX loops with subagents and a final report. |
+
+## Use usability-refinement
+
+The skill defaults to four refinement loops and an A- threshold for every tab
+and major interaction. Explicit invocation includes per-loop Git commits and
+pushes, a Google Doc report, and an email to the verified current user; all are
+configurable. The skill explains deployment authorization separately.
+
+```text
+Use $usability-refinement on this page, reviewing all tabs and these scenarios.
+max_loops=4 target_grade=A- delivery=google-doc-and-email
+```
+
+For a review without changes or external delivery:
+
+```text
+Use $usability-refinement mode=audit target_grade=B+ delivery=local
+```
+
+Install by copying the complete `usability-refinement/` folder into your
+agent's skills directory, or link it to `~/.agents/skills/usability-refinement`
+for Codex and `~/.claude/skills/usability-refinement` for Claude Code. Start a
+new session after installation. Slate-pages also carries a standalone copy at
+`.agents/skills/usability-refinement/`; keep all three files in that copy in
+sync with this repository when updating the skill. Run-specific reports and
+private browser evidence belong to the project being reviewed, not this repo.
 
 ## Install project-continuity
 
