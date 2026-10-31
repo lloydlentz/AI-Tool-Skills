@@ -14,6 +14,12 @@ Scope: <directories/files this record covers; what is explicitly out of scope>
 - Uncommitted: <files or "none">
 - <Anything half-finished, with where it stopped.>
 
+## Architecture Relevant to Next Steps
+
+- Existing mechanism: <how the behavior works; authoritative code/configuration or workflow reference>.
+- Source of truth and extension point: <where inputs/configuration belong and how changes enter the system>.
+- Constraints and rationale: <boundaries the next change must preserve; link to existing decisions rather than duplicating them>.
+
 ## Next Steps
 
 1. <Most important next action — include file path or command.>

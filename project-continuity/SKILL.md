@@ -34,7 +34,7 @@ Before editing or answering from project memory, inspect the current state, in t
 4. Readmes, documentation indexes, and only the implementation or artifacts needed to verify specific claims.
 5. Connected documents or trackers only when they are part of the requested scope and accessible through an available tool.
 
-**Stopping rule:** once the primary status file and the records it links to are read and checked against git state, stop searching. Do not read every document.
+**Stopping rule:** stop when the project record is checked against git state and the task-relevant mechanism and constraints are verified. Follow targeted implementation or decision links when the status file alone cannot establish those facts; do not survey the entire codebase.
 
 Exclude `.git`, dependency/vendor directories, build outputs, caches, generated artifacts, archived worktrees, and copied repositories unless the user explicitly puts them in scope.
 
@@ -45,6 +45,7 @@ Treat the working tree and verified results as stronger evidence than stale pros
 | Kind of information | Home |
 |---|---|
 | Progress, current state, next steps, decisions, blockers | The project's status file (in the repository) |
+| Architecture, extension points, and design rationale | Existing architecture/decision records, linked from the status file and applicable instructions |
 | Durable operating rules, conventions, commands | `AGENTS.md` / `CLAUDE.md` / rule files |
 | Facts about the user, their preferences, and feedback on how to work | The tool's own memory system (e.g. Claude Code auto-memory, Codex memories), if one exists |
 | Long-form research, meeting notes, published pieces | Their existing files; link to them rather than copying |
@@ -73,6 +74,7 @@ Follow the template's sections. A fresh session needs:
 - current state, including what remains uncommitted;
 - completed work and material artifacts;
 - decisions and the rationale that will matter later;
+- the existing mechanism, source of truth, extension points, and architectural constraints relevant to unfinished work, with links to their authoritative records;
 - discoveries, constraints, assumptions, and rejected approaches worth retaining;
 - validation performed and its result;
 - unresolved questions, blockers, risks, and external dependencies;
@@ -83,7 +85,7 @@ Do not claim work is complete without evidence. Label uncertainty explicitly. Re
 
 ### Keep it lean
 
-Keep the status file under roughly 150 lines. When it grows past that, move completed items and settled decisions older than the current milestone into a `## History` section at the bottom, or into an existing `CHANGELOG.md`, leaving one-line summaries.
+Keep the status file under roughly 150 lines. When it grows past that, move completed items and settled decisions older than the current milestone into a `## History` section at the bottom, or into an existing `CHANGELOG.md`, leaving one-line summaries. Keep still-active architectural constraints and their links easy to find regardless of their age.
 
 ### Boundaries
 
@@ -110,16 +112,18 @@ Orient before proposing or changing anything, reading only what is needed:
 1. Read the applicable instructions and the project's primary status file.
 2. Read the linked milestone, task, discovery, and decision records relevant to the stated goal.
 3. Inspect `git status --short`, relevant diffs, and recent commits so the documented state is checked against the actual workspace.
-4. Open only the implementation, artifacts, or validation output needed to confirm the current state and the next step. Do not survey the codebase.
-5. Resolve minor discrepancies from evidence. If a discrepancy could materially change the next action, surface it before proceeding rather than guessing.
+4. Verify the existing mechanism for the requested behavior: identify its source of truth, supported extension point, and architectural constraints. Trace a relevant path through code/configuration or the equivalent project artifacts; a status summary alone is insufficient. If no task is specified, verify the mechanism relevant to the next documented step.
+5. Before proposing implementation, classify the gap as missing data/configuration, a defect in the existing mechanism, or missing capability. Reuse or extend the current mechanism where it fits. If a new mechanism or changed boundary is warranted, state the current contract, why it is insufficient, and the proposed change before implementing it. A prior Next Steps entry is a hypothesis to verify, not proof of design fit.
+6. Resolve minor discrepancies from evidence. If a discrepancy could materially change the next action, surface it before proceeding rather than guessing.
 
 Then give a compact orientation of about 10–15 lines (see [references/examples.md](references/examples.md)):
 
 - project, and when/by what the record was last updated;
 - the current objective and state;
+- the existing mechanism and constraints that govern the next action, with a concrete file or record reference;
 - the last meaningful completed work;
 - outstanding work or blockers;
-- the next recommended action;
+- the next recommended action and why it fits the existing design, or why a change is needed;
 - any mismatch between documentation and the workspace.
 
 If the invocation includes a task, continue with that task after orienting. If invoked alone, stop after the orientation and ask what the user wants to tackle next. Resume mode is read-only unless the user also asks to continue, repair stale memory, or make changes.

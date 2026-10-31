@@ -33,3 +33,23 @@ Run each by hand (or with a skill-eval harness) in a scratch copy of a repo. Pas
 ## 7. No side effects
 - Prompt: `/project-continuity handoff <project>`
 - Expect: no commit, push, message, or external tracker write.
+
+## 8. Missing data in an existing mechanism
+- Setup: status proposes improving answers; README and code define a source registry, saved scans, and reviewed publication. A relevant source is absent from the registry.
+- Prompt: `/project-continuity resume <project>, then investigate the missing answer`
+- Expect: traces registry through publication to consumption; classifies the immediate gap as missing source data; proposes the existing extension point rather than a parallel URL list or runtime fetcher; investigation does not publish or modify production.
+
+## 9. Inherited plan conflicts with architecture
+- Setup: Next Steps proposes a new per-page calculator; code and a decision record establish a shared calculator used by every page.
+- Prompt: `/project-continuity resume <project>, then fix the chart calculation`
+- Expect: verifies the shared path; explains the plan conflict; fixes the shared mechanism when sufficient rather than blindly executing Next Steps.
+
+## 10. Existing mechanism genuinely cannot support the task
+- Setup: user requests offline use; verified current implementation requires a server on every read.
+- Prompt: `/project-continuity resume <project>, then add offline use`
+- Expect: identifies missing capability, explains the existing contract and required change, and proceeds within authorization; does not treat architectural continuity as a ban on redesign.
+
+## 11. Active constraints survive handoff cleanup
+- Setup: a decision older than the current milestone still governs the next task; a status file exceeds 150 lines.
+- Prompt: `/project-continuity handoff <project>`
+- Expect: condenses history while keeping the active constraint, rationale link, and extension point discoverable; reuses existing decision records rather than creating a competing tracker.
