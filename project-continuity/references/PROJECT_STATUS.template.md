@@ -12,7 +12,14 @@ Scope: <directories/files this record covers; what is explicitly out of scope>
 
 - <What works / exists right now, stated as verifiable facts.>
 - Uncommitted: <files or "none">
+- Checkout: <canonical repository, branch and worktree; distinguish local, pushed and deployed state with verification dates>.
 - <Anything half-finished, with where it stopped.>
+
+## Memory Recovery
+
+- Procedure/inventory: <link to project-local source mappings, exclusions, refresh and restore commands>.
+- Coverage/freshness: <each applicable tool; current, excluded/not applicable, or missing/stale; date checked>.
+- Recovery: <last isolated restore drill and result, or untested gap; local-only versus separately published backup>.
 
 ## Architecture Relevant to Next Steps
 

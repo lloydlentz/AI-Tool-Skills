@@ -1,18 +1,18 @@
 ---
 name: project-continuity
-description: Preserve and restore project context across chat sessions. Use when the user asks to wrap up, hand off, checkpoint, or save state for the next session, or asks a new session to read in, catch up, resume, orient itself, or continue from the current project state. Accepts `handoff`, `checkpoint`, or `resume`, optionally followed by a project name. Not for one-off edits to AGENTS.md, CLAUDE.md, or docs that are unrelated to ending or starting a session.
+description: Preserve and restore project context, tool memories and recovery copies across chat sessions and machines. Use when the user asks to wrap up, hand off, checkpoint, or save state for the next session, or asks a new session to read in, catch up, resume, orient itself, or continue from the current project state. Accepts `handoff`, `checkpoint`, or `resume`, optionally followed by a project name. Not for one-off edits to AGENTS.md, CLAUDE.md, or docs that are unrelated to ending or starting a session.
 ---
 
 # Project Continuity
 
-Keep the durable project record aligned with reality so a fresh agent can resume without relying on chat history.
+Keep the durable project record and project-specific tool memories current and recoverable so a fresh agent, including on another machine, can resume without relying on chat history.
 
 ## Choose the mode
 
 Infer the mode from the request or an argument supplied after the skill name:
 
 - `handoff`: fully reconcile the project record at the end of a work session.
-- `checkpoint`: a light mid-session save. Update only Current State, Next Steps, and Last Updated in the status file; skip full reconciliation and instruction-file edits.
+- `checkpoint`: a light mid-session save. Update Current State, Next Steps, and Last Updated, plus changed durable memories and their backups. Skip unrelated full-document reconciliation; repair missing recovery pointers when necessary.
 - `resume`: load and verify the project record at the start of a session.
 - If the request includes both resuming and work, run `resume` first and `handoff` after completing the work.
 - If the mode is genuinely ambiguous, prefer `handoff` when the user mentions updating or saving state; otherwise prefer `resume`.
@@ -33,8 +33,9 @@ Before editing or answering from project memory, inspect the current state, in t
    `rg --files <scope> | rg -i '(status|handoff|context|memory|roadmap|milestone|plan|next|tasks|todo|discovery|research|decision|changelog)'`
 4. Readmes, documentation indexes, and only the implementation or artifacts needed to verify specific claims.
 5. Connected documents or trackers only when they are part of the requested scope and accessible through an available tool.
+6. Project-specific tool memories, indexes and backup/restore instructions for every tool in use. Follow [memory recovery](references/memory-recovery.md) in every mode; a status update alone is not a complete continuity update.
 
-**Stopping rule:** stop when the project record is checked against git state and the task-relevant mechanism and constraints are verified. Follow targeted implementation or decision links when the status file alone cannot establish those facts; do not survey the entire codebase.
+**Stopping rule:** stop when the project record is checked against git state, the task-relevant mechanism and constraints are verified, and the scoped memory/recovery inventory is accounted for. Follow targeted implementation or decision links when the status file alone cannot establish those facts; do not survey the entire codebase or unrelated personal memory.
 
 Exclude `.git`, dependency/vendor directories, build outputs, caches, generated artifacts, archived worktrees, and copied repositories unless the user explicitly puts them in scope.
 
@@ -49,6 +50,7 @@ Treat the working tree and verified results as stronger evidence than stale pros
 | Durable operating rules, conventions, commands | `AGENTS.md` / `CLAUDE.md` / rule files |
 | Facts about the user, their preferences, and feedback on how to work | The tool's own memory system (e.g. Claude Code auto-memory, Codex memories), if one exists |
 | Long-form research, meeting notes, published pieces | Their existing files; link to them rather than copying |
+| Recovery copies of tool memory | The project's reviewed backup location and manifest; these are snapshots, not a second authority |
 
 Do not duplicate project progress into tool memory, and do not put user preferences into the project status file.
 
@@ -64,6 +66,7 @@ Build an evidence-based session delta from changed files, commands, results, cur
 - When equivalent Codex and Claude instruction files exist, keep shared facts consistent while preserving tool-specific wording and capabilities.
 - If no continuity file exists and important state would otherwise be lost, create `PROJECT_STATUS.md` in the project root from [references/PROJECT_STATUS.template.md](references/PROJECT_STATUS.template.md), unless repository conventions indicate a better name. Never create a second tracker that competes with an existing one (e.g. an existing `TODO.md` or `plan.md`); extend that instead.
 - **Make resume work without this skill:** ensure the nearest in-scope `AGENTS.md`/`CLAUDE.md` contains a one-line pointer to the status file, e.g. `Current status and next steps: see PROJECT_STATUS.md.` Add it only if absent.
+- For each tool used by the project, provide an instruction entry point to the same status and memory recovery procedure. If one tool's entry point is missing, add a short pointer to shared instructions rather than duplicating the rules.
 - Use `YYYY-MM-DD` dates.
 
 ### What to capture
@@ -72,6 +75,7 @@ Follow the template's sections. A fresh session needs:
 
 - objective and current scope;
 - current state, including what remains uncommitted;
+- canonical repository/branch/worktree and whether changes are local, committed, pushed, deployed or activated; record each separately, with verification date and evidence for external state;
 - completed work and material artifacts;
 - decisions and the rationale that will matter later;
 - the existing mechanism, source of truth, extension points, and architectural constraints relevant to unfinished work, with links to their authoritative records;
@@ -82,6 +86,10 @@ Follow the template's sections. A fresh session needs:
 - `Last updated: YYYY-MM-DD by <tool>`.
 
 Do not claim work is complete without evidence. Label uncertainty explicitly. Remove or correct stale statements rather than appending a contradictory update.
+
+### Preserve tool memory
+
+Reconcile project-specific Codex and Claude memories against current user decisions, then refresh their reviewed recovery copies. Follow [memory recovery](references/memory-recovery.md) for inventory, privacy, missing sources, checksums and restore validation. Content freshness and backup freshness are separate checks: matching hashes can preserve an obsolete instruction perfectly. Complete this step in checkpoints too.
 
 ### Keep it lean
 
@@ -102,7 +110,7 @@ After editing:
 1. Re-read the changed sections and inspect the documentation diff.
 2. Check that dates, links, milestone states, and commands are internally consistent, and that every file path named in Next Steps exists (or is explicitly marked "to be created").
 3. Run lightweight relevant validation when available. Do not rerun expensive test suites solely for a documentation handoff unless needed to substantiate a claim.
-4. Report the files updated, the durable state captured, validation performed, and anything intentionally left unresolved. See [references/examples.md](references/examples.md) for the shape.
+4. Report the files updated, the durable state captured, memory coverage/freshness and restore validation, and anything intentionally left unresolved. Distinguish a local snapshot from a committed/pushed or separately backed-up copy. Missing memories or untested recovery make continuity partial; identify the gap rather than claiming completion. See [references/examples.md](references/examples.md) for the shape.
 5. End with the exact resume invocation for the same tool and project scope.
 
 ## Resume mode
@@ -115,6 +123,7 @@ Orient before proposing or changing anything, reading only what is needed:
 4. Verify the existing mechanism for the requested behavior: identify its source of truth, supported extension point, and architectural constraints. Trace a relevant path through code/configuration or the equivalent project artifacts; a status summary alone is insufficient. If no task is specified, verify the mechanism relevant to the next documented step.
 5. Before proposing implementation, classify the gap as missing data/configuration, a defect in the existing mechanism, or missing capability. Reuse or extend the current mechanism where it fits. If a new mechanism or changed boundary is warranted, state the current contract, why it is insufficient, and the proposed change before implementing it. A prior Next Steps entry is a hypothesis to verify, not proof of design fit.
 6. Resolve minor discrepancies from evidence. If a discrepancy could materially change the next action, surface it before proceeding rather than guessing.
+7. Check scoped memory coverage, stale assumptions, backup freshness and recovery availability without writes. A clean clone may still lack machine-local memories; report the restore command and gap. Restore only when the request includes restoration/repair, and preserve newer destination memories.
 
 Then give a compact orientation of about 10–15 lines (see [references/examples.md](references/examples.md)):
 

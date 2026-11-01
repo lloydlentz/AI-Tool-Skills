@@ -32,6 +32,9 @@ Captured: chart tier-colouring done; decision to use CSS variables for tier colo
 new blocker (rate PDF). Uncommitted: src/chart.js, data/bills.csv.
 
 Validation: `npm run build` passed; all Next Steps paths exist.
+Memory: Codex and Claude project memories reconciled and snapshots verified;
+mixed-project index filtered. Recovery procedure: `agent-memory/README.md`.
+Last isolated restore drill passed 2026-09-18; backups remain local/uncommitted.
 Left unresolved: whether to show 2023 data (asked in Open Questions).
 
 Resume with:
@@ -62,3 +65,14 @@ then validate the saved evidence before any separately authorized publication.
 ```
 
 The file names are illustrative. An actual orientation cites verified project files.
+
+## Partial checkpoint
+
+```text
+Updated Current State and Next Steps. Codex project memory was reconciled;
+its snapshot is current. Claude's expected project-memory directory is absent
+on this machine, so its last verified snapshot was preserved.
+Recovery is partial: the missing source cannot be checked for newer content.
+Use the project's documented restore preview before an authorized restore;
+no restore, commit, push or deployment was performed by this checkpoint.
+```

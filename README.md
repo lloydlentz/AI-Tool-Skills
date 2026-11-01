@@ -115,6 +115,19 @@ $project-continuity resume transcript_decoding
 
 Claude Code uses the same arguments with `/project-continuity`.
 
+Handoffs and checkpoints reconcile project-specific memories and refresh
+reviewed backups for each tool in use. Resume checks coverage and freshness
+without writing. The [memory recovery procedure](project-continuity/references/memory-recovery.md)
+covers scoped inventories, private versus shareable storage, checksums, safe
+restoration and reporting incomplete recovery. Each project keeps its own
+source mappings and helpers; the public skill repository contains no personal
+memory snapshots. A continuity update alone does not authorize commit/push,
+cloud backup or deployment.
+
+See the [intent review](project-continuity/references/intent-review.md) for
+the gaps addressed and optional follow-ups, and the
+[acceptance scenarios](project-continuity/evals/cases.md) for expected behavior.
+
 The skill and project records are separate. This repository contains the
 reusable instructions; each project's status and milestones stay in its own
 repository. Share those project documents separately so another machine or

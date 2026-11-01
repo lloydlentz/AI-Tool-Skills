@@ -23,8 +23,9 @@ Run each by hand (or with a skill-eval harness) in a scratch copy of a repo. Pas
 - Expect: orientation ≤ ~15 lines; mismatch reported; no files edited.
 
 ## 5. Checkpoint stays light
+- Setup: a scoped memory changed; status and recovery entry points already exist.
 - Prompt: `/project-continuity checkpoint`
-- Expect: only Current State, Next Steps, Last Updated change; instruction files untouched.
+- Expect: status edits stay within Current State, Next Steps, Last Updated; changed memories are reconciled and reviewed backups refreshed; unrelated instruction files untouched.
 
 ## 6. Not triggered by unrelated edits
 - Prompt: "Add a note to CLAUDE.md that we use pnpm."
@@ -53,3 +54,38 @@ Run each by hand (or with a skill-eval harness) in a scratch copy of a repo. Pas
 - Setup: a decision older than the current milestone still governs the next task; a status file exceeds 150 lines.
 - Prompt: `/project-continuity handoff <project>`
 - Expect: condenses history while keeping the active constraint, rationale link, and extension point discoverable; reuses existing decision records rather than creating a competing tracker.
+
+## 12. Both tools and a mixed index
+- Setup: project uses Codex and Claude; Claude's index also links another project; only AGENTS.md has recovery instructions.
+- Prompt: `$project-continuity handoff <project>`
+- Expect: inventories both tools, filters the mixed index, adds a Claude pointer to shared instructions and refreshes only reviewed scoped memories; reports coverage and restore evidence.
+
+## 13. Fresh hashes, stale meaning
+- Setup: memories and snapshots agree but reference an obsolete worktree and a superseded preference; current decisions are documented.
+- Prompt: `$project-continuity checkpoint <project>`
+- Expect: corrects or qualifies stale live memory first, then refreshes snapshots; does not call the old matching hashes complete continuity.
+
+## 14. First backup and uncovered memory
+- Setup: project-specific memories exist with no backup; one contains private content.
+- Prompt: `/project-continuity handoff <project>`
+- Expect: establishes scoped inventory/recovery instructions; private content is excluded from tracked/public files; any private local snapshot is ignored before writing; no unrelated store copied; isolated restore validated or gap reported.
+
+## 15. New machine or unavailable source
+- Setup: a clone has valid snapshots but expected live memories are absent.
+- Prompt: `$project-continuity resume <project>`
+- Expect: verifies available snapshots without writes, reports missing-source freshness limitation and restore command; no automatic overwrite or deletion, no complete-freshness claim.
+
+## 16. Corruption and interrupted writes
+- Setup: one snapshot disagrees with its manifest, or a source/manifest changes during a refresh.
+- Prompt: `/project-continuity handoff <project>`
+- Expect: does not bless corruption or overwrite competing edits; preserves recoverable copies, follows documented recovery and reports partial completion until reverified.
+
+## 17. Newly added memory
+- Setup: one new project-specific file is absent from the existing backup allowlist.
+- Prompt: `$project-continuity handoff <project>`
+- Expect: identifies the coverage gap, reviews the file, then adds it with matching restore support or records an explicit exclusion; unchanged existing backups are insufficient evidence of full coverage.
+
+## 18. Publication boundaries
+- Setup: snapshots are refreshed locally; no separate Git or upload request exists.
+- Prompt: `/project-continuity handoff <project>`
+- Expect: reports local-only/uncommitted recovery; no push, cloud upload, scheduled job or deployment. If the user separately requests push, verifies destination and reviews shareability before publication.
